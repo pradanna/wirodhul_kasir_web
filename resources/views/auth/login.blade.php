@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
+    <meta name="csrf-token" content="{{csrf_token()}}">
     <link rel="shortcut icon" href="{{ asset('images/local/favicon.ico') }}" title="Favicon" />
 
     <!-- Fonts -->
@@ -67,7 +68,6 @@
                             </div>
                             <button class="btn-login   mt-4 d-block mb-3 w-100 " type="submit">LOGIN
                             </button>
-
                             <span class="d-block  text-center ">Bila ada kendala dalam login akun, silahkan hubungi
                                 <a href="#">admin</a></span>
                         </form>

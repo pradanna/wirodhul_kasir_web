@@ -2,71 +2,53 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helper\CustomController;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-class LoginController extends Controller
+class LoginController extends CustomController
 {
-    public function index()
-    {
-        // if (request()->method() == 'POST') {
-        //     return $this->postLogin();
-        // }
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    private $rule = [
+        'username' => 'required',
+        'password' => 'required',
+    ];
+
+    private $message = [
+        'username.required' => 'kolom username wajib di isi',
+        'password.required' => 'kolom password wajib di isi',
+    ];
+
+    public function login()
+    {
+        if ($this->request->method() === 'POST') {
+            $validator = Validator::make($this->request->all(), $this->rule, $this->message);
+            if ($validator->fails()) {
+                return redirect()->back()->with('failed', 'harap mengisi kolom dengan benar...')->withErrors($validator)->withInput();
+            }
+
+            $credentials = [
+                'username' => $this->postField('username'),
+                'password' => $this->postField('password')
+            ];
+
+
+            if ($this->isAuth($credentials)) {
+                $role = \auth()->user()->role;
+                if ($role !== 'cashier') {
+                    return redirect()->route('admin.dashboard');
+                }
+                return redirect()->route('dashboard');
+            }
+            return redirect()->back()->with('failed', 'Periksa Kembali Username dan Password Anda');
+        }
         return view('auth.login');
-    }
-
-    public function postLogin()
-    {
-        $field = \request()->validate(
-            [
-                'username' => 'required|string',
-                'password' => 'required|string',
-            ]
-        );
-        //            $user = User::where('username', $field['username'])->first();
-        //            if ($user && Hash::check($field['password'], $user->password)){
-        //                return redirect('/admin');
-        //            }
-        if ($this->isAuth($field)) {
-            if (\auth()->user()->isActive == false) {
-                Auth::logout();
-                return redirect()->back()->withInput()->withErrors(
-                    [
-                        'username' => 'User non aktif'
-                    ]
-                );
-            }
-            $role     = \auth()->user()->role;
-            if ($role !== 'cs') {
-                Auth::logout();
-                return redirect()->back()->withInput()->withErrors(
-                    [
-                        'username' => 'Akun tidak sesuai'
-                    ]
-                );
-            }
-
-            //            return response()->json();
-
-            return redirect('/admin');
-        }
-
-        return redirect()->back()->withcErrors(['password' => 'Password mismach.'])->withInput();
-    }
-
-    /**
-     * @param $credentials
-     *
-     * @return bool
-     */
-    public function isAuth($credentials = [])
-    {
-        if (count($credentials) > 0 && Auth::attempt($credentials)) {
-            return true;
-        }
-
-        return false;
     }
 
     public function logout()

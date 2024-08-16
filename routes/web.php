@@ -19,16 +19,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
-
-
-Route::match(['GET', 'POST'], '/login', [\App\Http\Controllers\Admin\LoginController::class, 'index'])->name('login');
+Route::match(['post', 'get'], '/', [\App\Http\Controllers\Admin\LoginController::class, 'login'])->name('login');
 Route::get('/logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout']);
 
 
-Route::prefix('/admin')->middleware('auth')->group(function () {});
+Route::prefix('/admin')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+});
 
 Route::prefix('kasir')->group(function () {
     Route::get('/', [KasirController::class, 'index'])->name('kasir.dashboard');
