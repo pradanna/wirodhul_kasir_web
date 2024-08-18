@@ -25,6 +25,20 @@ Route::get('/logout', [\App\Http\Controllers\Admin\LoginController::class, 'logo
 
 Route::prefix('/admin')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+
+    Route::group(['prefix' => 'pengguna'], function (){
+        Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.user');
+        Route::match(['post', 'get'],'/tambah', [\App\Http\Controllers\Admin\UserController::class, 'add'])->name('admin.user.add');
+        Route::match(['post', 'get'],'/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.user.edit');
+        Route::post('/{id}/delete', [\App\Http\Controllers\Admin\UserController::class, 'delete'])->name('admin.user.delete');
+    });
+
+    Route::group(['prefix' => 'kategori'], function (){
+        Route::get('/', [\App\Http\Controllers\Admin\CategoriesController::class, 'index'])->name('admin.category');
+        Route::match(['post', 'get'],'/tambah', [\App\Http\Controllers\Admin\CategoriesController::class, 'add'])->name('admin.category.add');
+        Route::match(['post', 'get'],'/{id}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.category.edit');
+        Route::post('/{id}/delete', [\App\Http\Controllers\Admin\CategoriesController::class, 'delete'])->name('admin.category.delete');
+    });
 });
 
 Route::prefix('kasir')->group(function () {

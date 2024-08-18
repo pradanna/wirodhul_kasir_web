@@ -45,7 +45,8 @@
     {{--    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script> --}}
     <link href="{{ asset('js/dropify/css/dropify.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('/css/sweetalert2.css') }}" rel="stylesheet">
+    <script src="{{ asset('/js/sweetalert2.min.js')}}"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 
     @yield('morecss')
@@ -65,12 +66,35 @@
             <ul>
                 @if(auth()->user()->role === 'owner')
                     <li>
-                        <a class=" menu {{ Request::is('kasir') ? 'active' : '' }} tooltip" href="/kasir"><span
+                        <a class=" menu {{ request()->is('admin/pengguna*') ? 'active' : '' }} tooltip"
+                           href="{{ route('admin.user') }}"><span
                                 class="material-symbols-outlined">
                                 person
                             </span>
                             <span class="text-menu"> Pengguna</span>
                             <span class="tooltiptext">Pengguna</span>
+                        </a>
+                    </li>
+                @endif
+                @if(auth()->user()->role === 'admin')
+                    <li>
+                        <a class="menu tooltip {{ request()->is('admin/kategori*') ? 'active' : '' }}"
+                           href="{{ route('admin.category') }}">
+                            <span class="material-symbols-outlined">
+                                label
+                            </span>
+                            <span class="text-menu"> Kategori</span>
+                            <span class="tooltiptext">Kategori</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu tooltip {{ request()->is('admin/kategori*') ? 'active' : '' }}"
+                           href="{{ route('admin.category') }}">
+                            <span class="material-symbols-outlined">
+                                inventory_2
+                            </span>
+                            <span class="text-menu"> Menu</span>
+                            <span class="tooltiptext">Menu</span>
                         </a>
                     </li>
                 @endif

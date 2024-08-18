@@ -622,7 +622,6 @@ body {
   background-color: #f34d4d;
 }
 .admin .breadcrumb-item a {
-  all: unset !important;
   color: gray;
   cursor: pointer !important;
 }
