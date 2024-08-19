@@ -25,7 +25,7 @@ class MenuController extends CustomController
                 ->get();
             return $this->basicDataTables($data);
         }
-        return view('admin.kategori.index');
+        return view('admin.menu.index');
     }
 
     public function add()
@@ -33,7 +33,10 @@ class MenuController extends CustomController
         if ($this->request->method() === 'POST') {
             return $this->store();
         }
-        return view('admin.kategori.add');
+        $categories = Category::all();
+        return view('admin.menu.add')->with([
+            'categories' => $categories
+        ]);
     }
 
     public function edit($id)
@@ -43,7 +46,7 @@ class MenuController extends CustomController
         if ($this->request->method() === 'POST') {
             return $this->patch($data);
         }
-        return view('admin.kategori.edit')->with(['data' => $data]);
+        return view('admin.menu.edit')->with(['data' => $data]);
     }
 
     public function delete($id)

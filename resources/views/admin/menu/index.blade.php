@@ -7,13 +7,13 @@
     <div class="dashboard">
         <div class="d-flex justify-content-between align-items-center mb-1">
             <div>
-                <p class="content-title">Kategori</p>
-                <p class="content-sub-title">Manajemen data kategori</p>
+                <p class="content-title">Menu</p>
+                <p class="content-sub-title">Manajemen data menu</p>
             </div>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Kategori</li>
+                    <li class="breadcrumb-item active" aria-current="page">Menu</li>
                 </ol>
             </nav>
         </div>
@@ -31,7 +31,10 @@
                 <thead>
                 <tr>
                     <th width="5%" class="text-center">#</th>
+                    <th width="12%">Gambar</th>
+                    <th width="10%">Kategori</th>
                     <th>Nama</th>
+                    <th width="15%" class="text-end">Harga (Rp.)</th>
                     <th width="10%" class="text-center">Aksi</th>
                 </tr>
                 </thead>
@@ -62,10 +65,43 @@
                     eventDelete();
                 },
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false, className: 'text-center middle-header',},
+                    {
+                        className: 'dt-control middle-header',
+                        orderable: false,
+                        data: null,
+                        render: function () {
+                            return '<i class="bx bx-plus-circle"></i>';
+                        }
+                    },
+                    {
+                        data: 'image',
+                        orderable: false,
+                        className: 'middle-header text-center',
+                        render: function (data) {
+                            if (data !== null) {
+                                return '<div class="w-100 d-flex justify-content-center">' +
+                                    '<a href="' + data + '" target="_blank" class="box-product-image">' +
+                                    '<img src="' + data + '" alt="product-image" />' +
+                                    '</a>' +
+                                    '</div>';
+                            }
+                            return '-';
+                        }
+                    },
+                    {
+                        data: 'category.name',
+                        className: 'middle-header text-center',
+                    },
                     {
                         data: 'name',
                         className: 'middle-header',
+                    },
+                    {
+                        data: 'price',
+                        className: 'text-right middle-header',
+                        render: function (data) {
+                            return data.toLocaleString('id-ID');
+                        }
                     },
                     {
                         data: null,
