@@ -26,36 +26,37 @@ Route::get('/logout', [\App\Http\Controllers\Admin\LoginController::class, 'logo
 Route::prefix('/admin')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
-    Route::group(['prefix' => 'pengguna'], function (){
+    Route::group(['prefix' => 'pengguna'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.user');
-        Route::match(['post', 'get'],'/tambah', [\App\Http\Controllers\Admin\UserController::class, 'add'])->name('admin.user.add');
-        Route::match(['post', 'get'],'/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.user.edit');
+        Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\UserController::class, 'add'])->name('admin.user.add');
+        Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin.user.edit');
         Route::post('/{id}/delete', [\App\Http\Controllers\Admin\UserController::class, 'delete'])->name('admin.user.delete');
     });
 
-    Route::group(['prefix' => 'kategori'], function (){
+    Route::group(['prefix' => 'kategori'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\CategoriesController::class, 'index'])->name('admin.category');
-        Route::match(['post', 'get'],'/tambah', [\App\Http\Controllers\Admin\CategoriesController::class, 'add'])->name('admin.category.add');
-        Route::match(['post', 'get'],'/{id}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.category.edit');
+        Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\CategoriesController::class, 'add'])->name('admin.category.add');
+        Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.category.edit');
         Route::post('/{id}/delete', [\App\Http\Controllers\Admin\CategoriesController::class, 'delete'])->name('admin.category.delete');
     });
 
-    Route::group(['prefix' => 'menu'], function (){
+    Route::group(['prefix' => 'menu'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\MenuController::class, 'index'])->name('admin.menu');
-        Route::match(['post', 'get'],'/tambah', [\App\Http\Controllers\Admin\MenuController::class, 'add'])->name('admin.menu.add');
-        Route::match(['post', 'get'],'/{id}/edit', [\App\Http\Controllers\Admin\MenuController::class, 'edit'])->name('admin.menu.edit');
+        Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\MenuController::class, 'add'])->name('admin.menu.add');
+        Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\MenuController::class, 'edit'])->name('admin.menu.edit');
         Route::post('/{id}/delete', [\App\Http\Controllers\Admin\MenuController::class, 'delete'])->name('admin.menu.delete');
     });
 });
 
 Route::prefix('kasir')->group(function () {
-    Route::get('/', [KasirController::class, 'index'])->name('kasir.dashboard');
-    Route::get('/tambahmenu', [TambahMenuController::class, 'index'])->name('kasir.tambahmenu');
-    Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('kasir.pengeluaran');
-    Route::get('/laporanpemasukan', [LaporanPemasukanController::class, 'index'])->name('kasir.laporanpemasukan');
-    Route::get('/laporanpengeluaran', [LaporanPengeluaranController::class, 'index'])->name('kasir.laporanpengeluaran');
-    Route::get('/cetak-nota', [KasirController::class, 'cetakNota'])->name('kasir.cetaknota');
-    Route::get('/cetak-laporan-pemasukan', [LaporanPemasukanController::class, 'cetakLaporanPemasukan'])->name('kasir.cetaklaporanpemasukan');
-    Route::get('/cetak-laporan-pengeluaran', [LaporanPengeluaranController::class, 'cetakLaporanPengeluaran'])->name('kasir.cetaklaporanpengeluaran');
-    Route::get('/members', [MembersController::class, 'index'])->name('kasir.members');
+    Route::get('/', [\App\Http\Controllers\Cashier\DashboardController::class, 'index'])->name('cashier.dashboard');
+//    Route::get('/', [KasirController::class, 'index'])->name('kasir.dashboard');
+//    Route::get('/tambahmenu', [TambahMenuController::class, 'index'])->name('kasir.tambahmenu');
+//    Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('kasir.pengeluaran');
+//    Route::get('/laporanpemasukan', [LaporanPemasukanController::class, 'index'])->name('kasir.laporanpemasukan');
+//    Route::get('/laporanpengeluaran', [LaporanPengeluaranController::class, 'index'])->name('kasir.laporanpengeluaran');
+//    Route::get('/cetak-nota', [KasirController::class, 'cetakNota'])->name('kasir.cetaknota');
+//    Route::get('/cetak-laporan-pemasukan', [LaporanPemasukanController::class, 'cetakLaporanPemasukan'])->name('kasir.cetaklaporanpemasukan');
+//    Route::get('/cetak-laporan-pengeluaran', [LaporanPengeluaranController::class, 'cetakLaporanPengeluaran'])->name('kasir.cetaklaporanpengeluaran');
+//    Route::get('/members', [MembersController::class, 'index'])->name('kasir.members');
 });

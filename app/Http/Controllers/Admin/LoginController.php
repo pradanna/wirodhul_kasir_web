@@ -44,7 +44,7 @@ class LoginController extends CustomController
                 if ($role !== 'cashier') {
                     return redirect()->route('admin.dashboard');
                 }
-                return redirect()->route('dashboard');
+                return redirect()->route('cashier.dashboard');
             }
             return redirect()->back()->with('failed', 'Periksa Kembali Username dan Password Anda');
         }
