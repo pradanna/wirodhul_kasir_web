@@ -88,8 +88,8 @@
                         </a>
                     </li>
                     <li>
-                        <a class="menu tooltip {{ request()->is('admin/kategori*') ? 'active' : '' }}"
-                           href="{{ route('admin.category') }}">
+                        <a class="menu tooltip {{ request()->is('admin/menu*') ? 'active' : '' }}"
+                           href="{{ route('admin.menu') }}">
                             <span class="material-symbols-outlined">
                                 inventory_2
                             </span>

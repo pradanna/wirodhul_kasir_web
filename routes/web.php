@@ -39,6 +39,13 @@ Route::prefix('/admin')->group(function () {
         Route::match(['post', 'get'],'/{id}/edit', [\App\Http\Controllers\Admin\CategoriesController::class, 'edit'])->name('admin.category.edit');
         Route::post('/{id}/delete', [\App\Http\Controllers\Admin\CategoriesController::class, 'delete'])->name('admin.category.delete');
     });
+
+    Route::group(['prefix' => 'menu'], function (){
+        Route::get('/', [\App\Http\Controllers\Admin\MenuController::class, 'index'])->name('admin.menu');
+        Route::match(['post', 'get'],'/tambah', [\App\Http\Controllers\Admin\MenuController::class, 'add'])->name('admin.menu.add');
+        Route::match(['post', 'get'],'/{id}/edit', [\App\Http\Controllers\Admin\MenuController::class, 'edit'])->name('admin.menu.edit');
+        Route::post('/{id}/delete', [\App\Http\Controllers\Admin\MenuController::class, 'delete'])->name('admin.menu.delete');
+    });
 });
 
 Route::prefix('kasir')->group(function () {

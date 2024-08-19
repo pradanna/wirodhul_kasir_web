@@ -72,6 +72,22 @@ async function BaseDeleteHandler(url, id) {
         ErrorAlert('Error', error_message.message);
     }
 }
+
+function validateMessage(message, target = []) {
+    $.each(target, function (k, v) {
+        let elTarget = $('#' + v + '-error');
+        if (!elTarget.hasClass('d-none')) {
+            elTarget.addClass('d-none');
+        }
+    });
+
+    for (const [key, value] of Object.entries(message)) {
+        let elTarget = $('#' + key + '-error');
+        elTarget.removeClass('d-none');
+        elTarget.html(value[0]);
+    }
+}
+
 // var myToastEl = document.getElementById('liveToast');
 // var myToast = new bootstrap.Toast(myToastEl, {
 //     autohide: true,

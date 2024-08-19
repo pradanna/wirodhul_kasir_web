@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class MenuController extends CustomController
 {
@@ -30,7 +31,7 @@ class MenuController extends CustomController
 
     public function add()
     {
-        if ($this->request->method() === 'POST') {
+        if ($this->request->method() === 'POST' && $this->request->ajax()) {
             return $this->store();
         }
         $categories = Category::all();
@@ -43,10 +44,14 @@ class MenuController extends CustomController
     {
         $data = Menu::with(['category'])
             ->findOrFail($id);
-        if ($this->request->method() === 'POST') {
+        if ($this->request->method() === 'POST' && $this->request->ajax()) {
             return $this->patch($data);
         }
-        return view('admin.menu.edit')->with(['data' => $data]);
+        $categories = Category::all();
+        return view('admin.menu.edit')->with([
+            'categories' => $categories,
+            'data' => $data
+        ]);
     }
 
     public function delete($id)
@@ -60,11 +65,12 @@ class MenuController extends CustomController
     }
 
     private $rule = [
-        'category_id' => 'required',
+        'category' => 'required',
         'name' => 'required',
     ];
 
     private $message = [
+        'category.required' => 'kolom kategori wajib diisi',
         'name.required' => 'kolom nama wajib diisi',
     ];
 
@@ -74,40 +80,63 @@ class MenuController extends CustomController
         try {
             $validator = Validator::make($this->request->all(), $this->rule, $this->message);
             if ($validator->fails()) {
-                return redirect()->back()->with('failed', 'Harap mengisi kolom dengan benar...')->withErrors($validator)->withInput();
+                $errors = $validator->errors()->getMessages();
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Harap Mengisi Kolom Dengan Benar...',
+                    'data' => $errors
+                ], 400);
             }
             $data_request = $this->getDataRequest();
             Menu::create($data_request);
-            return redirect()->back()->with('success', 'Berhasil menyimpan data kategori...');
+            return $this->jsonSuccessResponse('success', 'Berhasil menyimpan data menu...');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('failed', 'terjadi kesalahan server...');
+            return $this->jsonErrorResponse();
         }
     }
 
     /**
-     * @param $data Model
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Model $data
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     private function patch($data)
     {
         try {
             $validator = Validator::make($this->request->all(), $this->rule, $this->message);
             if ($validator->fails()) {
-                return redirect()->back()->with('failed', 'Harap mengisi kolom dengan benar...')->withErrors($validator)->withInput();
+                $errors = $validator->errors()->getMessages();
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Harap Mengisi Kolom Dengan Benar...',
+                    'data' => $errors
+                ], 400);
             }
             $data_request = $this->getDataRequest();
             $data->update($data_request);
-            return redirect()->back()->with('success', 'Berhasil merubah data menu...');
+            return $this->jsonSuccessResponse('success', 'Berhasil menyimpan data menu...');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('failed', 'terjadi kesalahan server...');
+            return $this->jsonErrorResponse();
         }
     }
 
     private function getDataRequest()
     {
-        return [
+        $data_request = [
             'category_id' => $this->postField('category'),
             'name' => $this->postField('name'),
+            'price' => $this->postField('price'),
+            'description' => $this->postField('description'),
         ];
+
+        if ($this->request->hasFile('file')) {
+            $file = $this->request->file('file');
+            $extension = $file->getClientOriginalExtension();
+            $document = Uuid::uuid4()->toString() . '.' . $extension;
+            $storage_path = public_path('assets/menu');
+            $documentName = $storage_path . '/' . $document;
+            $data_request['image'] = '/assets/menu/' . $document;
+            $file->move($storage_path, $documentName);
+        }
+        return $data_request;
     }
 }

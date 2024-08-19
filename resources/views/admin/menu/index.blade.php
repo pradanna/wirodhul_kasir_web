@@ -20,10 +20,10 @@
 
         <div class="card-content">
             <div class="content-header mb-3">
-                <p class="header-title">Data Kategori</p>
-                <a href="{{ route('admin.category.add') }}" class="btn-add">
+                <p class="header-title">Data Menu</p>
+                <a href="{{ route('admin.menu.add') }}" class="btn-add">
                     <i class="material-symbols-outlined" style="font-size: 0.8em;">add</i>
-                    <span>Tambah Kategori</span>
+                    <span>Tambah Menu</span>
                 </a>
             </div>
             <hr class="custom-divider"/>
