@@ -54,7 +54,7 @@
                 <div class="w-100 mb-3">
                     <label for="name" class="form-label input-label">Nama <span
                             class="color-danger">*</span></label>
-                    <input type="text" placeholder="Nama Kategori" class="text-input" id="name"
+                    <input type="text" placeholder="Nama Menu" class="text-input" id="name"
                            name="name">
                     <span id="name-error" class="input-label-error d-none"></span>
                 </div>

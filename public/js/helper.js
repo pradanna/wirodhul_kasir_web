@@ -67,7 +67,26 @@ async function BaseDeleteHandler(url, id) {
         }).then(() => {
             window.location.reload();
         })
-    }catch (e) {
+    } catch (e) {
+        let error_message = JSON.parse(e.responseText);
+        ErrorAlert('Error', error_message.message);
+    }
+}
+
+async function CustomBaseDeleteHandler(url, data, callback = function () {
+
+}) {
+    try {
+        await $.post(url, data);
+        Swal.fire({
+            title: 'Success',
+            text: 'Berhasil menghapus data...',
+            icon: 'success',
+            timer: 700
+        }).then(() => {
+            callback();
+        })
+    } catch (e) {
         let error_message = JSON.parse(e.responseText);
         ErrorAlert('Error', error_message.message);
     }
@@ -114,6 +133,7 @@ function debounce(fn, delay) {
         }, delay);
     };
 }
+
 // var myToastEl = document.getElementById('liveToast');
 // var myToast = new bootstrap.Toast(myToastEl, {
 //     autohide: true,

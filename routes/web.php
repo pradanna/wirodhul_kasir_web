@@ -49,7 +49,7 @@ Route::prefix('/admin')->group(function () {
 });
 
 Route::prefix('kasir')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Cashier\DashboardController::class, 'index'])->name('cashier.dashboard');
+    Route::match(['post', 'get'],'/', [\App\Http\Controllers\Cashier\DashboardController::class, 'index'])->name('cashier.dashboard');
 //    Route::get('/', [KasirController::class, 'index'])->name('kasir.dashboard');
 //    Route::get('/tambahmenu', [TambahMenuController::class, 'index'])->name('kasir.tambahmenu');
 //    Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('kasir.pengeluaran');

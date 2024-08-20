@@ -11,6 +11,7 @@ class Cart extends Model
 
     protected $fillable = [
         'menu_id',
+        'transaction_id',
         'price',
         'qty',
         'total',
@@ -19,5 +20,10 @@ class Cart extends Model
     public function menu()
     {
         return $this->belongsTo(Menu::class, 'menu_id');
+    }
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 }

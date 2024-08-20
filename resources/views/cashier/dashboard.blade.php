@@ -63,7 +63,7 @@
                     </div>
                     <div class=" bg-white p-3 rounded">
                         <!-- Tabel Keranjang -->
-                        <table class="table">
+                        <table id="table-data" class="display table w-100">
                             <thead>
                             <tr>
                                 <th scope="col">Menu</th>
@@ -73,20 +73,20 @@
                                 <th scope="col">Aksi</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td>Nama Menu 1</td>
-                                <td>1</td>
-                                <td>Rp 10.000</td>
-                                <td>Rp 10.000</td>
-                                <td><a class="btn-danger-sm">x</a></td>
-                            </tr>
-                            <!-- Tambahkan item keranjang lainnya di sini -->
-                            </tbody>
+                            {{--                            <tbody>--}}
+                            {{--                            <tr>--}}
+                            {{--                                <td>Nama Menu 1</td>--}}
+                            {{--                                <td>1</td>--}}
+                            {{--                                <td>Rp 10.000</td>--}}
+                            {{--                                <td>Rp 10.000</td>--}}
+                            {{--                                <td><a class="btn-danger-sm">x</a></td>--}}
+                            {{--                            </tr>--}}
+                            {{--                            <!-- Tambahkan item keranjang lainnya di sini -->--}}
+                            {{--                            </tbody>--}}
                         </table>
 
                         <div class="text-total">
-                            <p>Total : Rp 10.000</p>
+                            <p id="lbl-total">Total : Rp0</p>
 
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                             </div>
                             <div class="">
                                 <label for="diskon" class="form-label fs-small">Diskon</label>
-                                <input readonly value="0" class="form-control w-100" id="diskon" />
+                                <input readonly value="0" class="form-control w-100" id="diskon"/>
                             </div>
                         </div>
                         <div class="mb-1">
@@ -128,6 +128,8 @@
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script>
         var path = '/{{ request()->path() }}';
+        var table;
+        var selectedMenu = null;
 
         async function getData() {
             try {
@@ -135,7 +137,7 @@
                 resultEl.empty();
                 resultEl.append(createLoader('sedang mengunduh data...', 400));
                 let param = $('#param').val();
-                let url = path + '?param=' + param;
+                let url = path + '?type=product&param=' + param;
                 let response = await $.get(url);
                 let data = response['data'];
                 console.log(data);
@@ -181,9 +183,75 @@
             )
         }
 
+        function generateTable() {
+            table = $('#table-data').DataTable({
+                ajax: {
+                    type: 'GET',
+                    url: path,
+                    'data': function (d) {
+                        d.type = 'cart'
+                    }
+                },
+                "aaSorting": [],
+                "order": [],
+                scrollX: true,
+                responsive: true,
+                paging: true,
+                "fnDrawCallback": function (setting) {
+                    // eventDelete();
+                    eventDelete();
+                    let data = this.fnGetData();
+                    let total = data.map(item => item['total']).reduce((prev, next) => prev + next, 0);
+                    $('#lbl-total').html('Total Rp. ' + total.toLocaleString('id-ID'));
+                },
+                dom: 't',
+                columns: [
+                    {
+                        data: 'menu.name',
+                        className: 'middle-header',
+                    },
+                    {
+                        data: 'qty',
+                        className: 'middle-header',
+                    },
+                    {
+                        data: 'price',
+                        className: 'middle-header',
+                    },
+                    {
+                        data: 'total',
+                        className: 'middle-header',
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: 'text-center middle-header',
+                        render: function (data) {
+                            let id = data['id'];
+                            let urlEdit = path + '/' + id + '/edit';
+                            return '<td><a class="btn-danger-sm btn-delete-cart" data-id="' + id + '">x</a></td>';
+                        }
+                    }
+                ],
+            });
+        }
+
+        function eventDelete() {
+            $('.btn-delete-cart').on('click', function (e) {
+                e.preventDefault();
+                let id = this.dataset.id;
+                AlertConfirm('Konfirmasi', 'Apakah anda yakin ingin menghapus data?', function () {
+                    CustomBaseDeleteHandler(path, {id}, function () {
+                        table.ajax.reload();
+                    });
+                })
+            })
+        }
+
         $(document).ready(function () {
             eventSearchHandler();
             getData();
+            generateTable();
         });
     </script>
 @endsection
