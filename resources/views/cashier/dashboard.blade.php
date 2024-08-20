@@ -91,26 +91,20 @@
                         </div>
                     </div>
                     <div class="bg-white p-3 rounded mt-3">
-
                         <div class="d-flex">
-
                             <div class="flex-1 w-100 me-2">
-
                                 <label for="member" class="form-label fs-small">Pilih Member</label>
                                 <select class="selectmember form-control" name="state" id="member">
                                     <option value="na">Non Member</option>
                                     <option value="bagus">Bagus</option>
                                     <option value="topik">Topik</option>
                                 </select>
-
                             </div>
-
                             <div class="">
                                 <label for="diskon" class="form-label fs-small">Diskon</label>
                                 <input readonly value="0" class="form-control w-100" id="diskon" />
                             </div>
                         </div>
-
                         <div class="mb-1">
                             <label for="uangdibayar" class="form-label fs-small">Uang yang dibayarkan</label>
                             <input type="number" class="form-control" id="uangdibayar">
