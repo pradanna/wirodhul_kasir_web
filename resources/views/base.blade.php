@@ -97,6 +97,16 @@
                             <span class="tooltiptext">Menu</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="menu tooltip {{ request()->is('admin/setting-diskon*') ? 'active' : '' }}"
+                           href="{{ route('admin.discount') }}">
+                            <span class="material-symbols-outlined">
+                                attach_money
+                            </span>
+                            <span class="text-menu"> Setting Diskon</span>
+                            <span class="tooltiptext">Setting Diskon</span>
+                        </a>
+                    </li>
                 @endif
                 @if(auth()->user()->role === 'cashier')
                     <li>
@@ -110,10 +120,8 @@
                     </li>
 
                     <li>
-                        <a class="menu tooltip {{ Request::is('kasir/members') ? 'active' : '' }}"
-                           href="/kasir/members">
-
-
+                        <a class="menu tooltip {{ Request::is('kasir/member') ? 'active' : '' }}"
+                           href="{{ route('cashier.member') }}">
                             <span class="material-symbols-outlined">
                                 group
                             </span>
@@ -123,39 +131,31 @@
                     </li>
                 @endif
 
-                @if(auth()->user()->role === 'cashier')
-                    <li>
-                        <a class="menu tooltip {{ Request::is('kasir/tambahmenu') ? 'active' : '' }}"
-                           href="/kasir/tambahmenu">
+                {{--                @if(auth()->user()->role === 'cashier')--}}
+                {{--                    <li>--}}
+                {{--                        <a class="menu tooltip {{ Request::is('kasir/tambahmenu') ? 'active' : '' }}"--}}
+                {{--                           href="/kasir/tambahmenu">--}}
 
 
-                            <span class="material-symbols-outlined">
-                                menu_book
-                            </span>
-                            <span class="text-menu"> Tambah Menu</span>
-                            <span class="tooltiptext">Tambah Menu</span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a class=" menu {{ Request::is('kasir/pengeluaran') ? 'active' : '' }} tooltip"
-                           href="/kasir/pengeluaran"><span class="material-symbols-outlined">
-                                outbound
-                            </span>
-                            <span class="text-menu"> Pengeluaran</span>
-                            <span class="tooltiptext">Pengeluaran</span>
-                        </a>
-                    </li>
-                @endif
-                {{--                <li>--}}
-                {{--                    <a class="menu tooltip {{ Request::is('kasir/laporanpemasukan') ? 'active' : '' }}"--}}
-                {{--                       href="/kasir/laporanpemasukan"><span class="material-symbols-outlined">--}}
-                {{--                                summarize--}}
+                {{--                            <span class="material-symbols-outlined">--}}
+                {{--                                menu_book--}}
                 {{--                            </span>--}}
-                {{--                        <span class="text-menu"> Laporan Pemasukan </span>--}}
-                {{--                        <span class="tooltiptext">Laporan Pemasukan </span>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
+                {{--                            <span class="text-menu"> Tambah Menu</span>--}}
+                {{--                            <span class="tooltiptext">Tambah Menu</span>--}}
+                {{--                        </a>--}}
+                {{--                    </li>--}}
+
+                {{--                    <li>--}}
+                {{--                        <a class=" menu {{ Request::is('kasir/pengeluaran') ? 'active' : '' }} tooltip"--}}
+                {{--                           href="/kasir/pengeluaran"><span class="material-symbols-outlined">--}}
+                {{--                                outbound--}}
+                {{--                            </span>--}}
+                {{--                            <span class="text-menu"> Pengeluaran</span>--}}
+                {{--                            <span class="tooltiptext">Pengeluaran</span>--}}
+                {{--                        </a>--}}
+                {{--                    </li>--}}
+                {{--                @endif--}}
+
                 @if(auth()->user()->role !== 'cashier')
                     <li>
                         <a class="menu tooltip {{ Request::is('kasir/laporanpengeluaran') ? 'active' : '' }}"

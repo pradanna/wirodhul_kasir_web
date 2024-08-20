@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Cashier;
 
 use App\Helper\CustomController;
 use App\Models\Cart;
+use App\Models\DiscountSetting;
+use App\Models\Member;
 use App\Models\Menu;
 
 class DashboardController extends CustomController
@@ -51,7 +53,12 @@ class DashboardController extends CustomController
             return $this->jsonSuccessResponse('success');
 
         }
-        return view('cashier.dashboard');
+
+        $members = Member::with([])
+            ->get();
+        return view('cashier.dashboard')->with([
+            'members' => $members
+        ]);
     }
 
     private function destroy_cart($id)
@@ -60,6 +67,61 @@ class DashboardController extends CustomController
             Cart::destroy($id);
             return $this->jsonSuccessResponse('Berhasil menghapus data...');
         } catch (\Exception $e) {
+            return $this->jsonErrorResponse();
+        }
+    }
+
+    public function addToCart()
+    {
+        try {
+            $menuID = $this->postField('id');
+            $qty = $this->postField('qty');
+
+            $menu = Menu::with([])
+                ->where('id', '=', $menuID)
+                ->first();
+            if (!$menu) {
+                return $this->jsonNotFoundResponse('belum memilih menu...');
+            }
+
+            $price = $menu->price;
+            $total = $qty * $price;
+            $data_request = [
+                'menu_id' => $menuID,
+                'transaction_id' => null,
+                'price' => $price,
+                'qty' => $qty,
+                'total' => $total
+            ];
+
+            Cart::create($data_request);
+            return $this->jsonSuccessResponse('success');
+        }catch (\Exception $e) {
+            return $this->jsonErrorResponse();
+        }
+    }
+
+    public function get_discount()
+    {
+        try {
+            $carts = Cart::with([])
+                ->whereNull('transaction_id')
+                ->get();
+
+            $total = $carts->sum('total');
+            $discountSettings = DiscountSetting::with([])
+                ->where('nominal','>=', $total)
+                ->orderBy('nominal','ASC')
+                ->first();
+
+            $discount = 0;
+            if ($discountSettings) {
+                $discountValue = $discountSettings->discount;
+                $discount = ($total * $discountValue) / 100;
+            }
+
+            return $this->jsonSuccessResponse('success', $discount);
+        }catch (\Exception $e) {
             return $this->jsonErrorResponse();
         }
     }

@@ -2,9 +2,33 @@
 
 @section('morecss')
     <link rel="stylesheet" href="{{ asset('/css/custom.style.css') }}">
+    <style>
+        .lazy-backdrop {
+            position: fixed;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            z-index: 9999;
+            cursor: pointer;
+        }
+    </style>
 @endsection
 
 @section('content')
+    <div class="lazy-backdrop" id="overlay-loading">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <div class="spinner-border text-light" role="status">
+            </div>
+            <p class="text-light">Sedang Menyimpan Data...</p>
+        </div>
+    </div>
     <div class="dashboard">
         {{--        <div class="d-flex justify-content-between align-items-center mb-1">--}}
         {{--            <div>--}}
@@ -56,17 +80,10 @@
                                 <div class="d-flex">
                                     <input type="number" class="form-control me-2" id="qty" value="1"
                                            min="1">
-                                    <a class="bt-primary">Masukan</a>
+                                    <a class="bt-primary" href="#" id="btn-add-cart">Masukan</a>
                                 </div>
                             </div>
                         </div>
-                        {{--                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Nama Menu">--}}
-                        {{--                        <div class="card-body">--}}
-                        {{--                            <p class="nama-menu">Nama Menu</p>--}}
-                        {{--                            <p class="deskripsi">Deskripsi singkat mengenai menu yang dipilih.</p>--}}
-                        {{--                            <p class="harga-menu">Rp. 10.000</p>--}}
-
-                        {{--                        </div>--}}
                     </div>
                     <div class=" bg-white p-3 rounded">
                         <!-- Tabel Keranjang -->
@@ -91,9 +108,10 @@
                             <div class="flex-1 w-100 me-2">
                                 <label for="member" class="form-label fs-small">Pilih Member</label>
                                 <select class="selectmember form-control" name="state" id="member">
-                                    <option value="na">Non Member</option>
-                                    <option value="bagus">Bagus</option>
-                                    <option value="topik">Topik</option>
+                                    <option value="">Non Member</option>
+                                    @foreach($members as $member)
+                                        <option value="{{ $member->id }}">{{ $member->username }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="">
@@ -158,6 +176,7 @@
                 let url = path + '?type=detail&id=' + id;
                 let response = await $.get(url);
                 let data = response['data'];
+                selectedMenu = data;
                 console.log(data);
                 resultEl.empty();
                 if (data !== null) {
@@ -220,7 +239,7 @@
                 '<div class="card-body">' +
                 '<p class="nama-menu">' + name + '</p>' +
                 '<p class="harga-menu">Rp. ' + price.toLocaleString('id-ID') + '</p>' +
-                    '</div>';
+                '</div>';
         }
 
         function generateTable() {
@@ -288,11 +307,70 @@
             })
         }
 
+        function eventAddToCart() {
+            $('#btn-add-cart').on('click', function (e) {
+                e.preventDefault();
+                let id = this.dataset.id;
+                AlertConfirm('Konfirmasi', 'Apakah anda yakin ingin menambahkan pesanan?', function () {
+                    addToCartHandler();
+                })
+            })
+        }
+
+        async function addToCartHandler() {
+            try {
+                blockLoading(true);
+                let url = path + '/cart';
+                await $.post(url, {
+                    id: selectedMenu['id'],
+                    qty: $('#qty').val()
+                });
+                blockLoading(false);
+                Swal.fire({
+                    title: 'Berhasil',
+                    text: 'Berhasil Menyimpan data...',
+                    icon: 'success',
+                    timer: 700
+                }).then(() => {
+                    table.ajax.reload();
+                });
+            } catch (e) {
+                blockLoading(false);
+                Swal.fire({
+                    title: 'Ooops',
+                    text: 'Gagal Menyimpan Data...',
+                    icon: 'error',
+                    timer: 700
+                });
+            }
+        }
+
+        async function getDiscount() {
+            try {
+                let url = path + '/cart/discount';
+                let response = await $.get(url);
+                let data = response['data'];
+                console.log(data);
+            } catch (e) {
+                alert('error' + e);
+            }
+        }
+
+        function eventChangeMember() {
+            $('#member').on('change', function () {
+                let val = this.value;
+                console.log(val);
+                getDiscount();
+            });
+        }
 
         $(document).ready(function () {
             eventSearchHandler();
             getData();
             generateTable();
+            eventAddToCart();
+
+            eventChangeMember();
         });
     </script>
 @endsection
