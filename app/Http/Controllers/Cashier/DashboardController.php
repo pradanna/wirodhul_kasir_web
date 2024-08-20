@@ -32,6 +32,14 @@ class DashboardController extends CustomController
                 return $this->jsonSuccessResponse('success', $data);
             }
 
+            if ($type === 'detail') {
+                $productID = $this->field('id');
+                $data = Menu::with([])
+                    ->where('id', '=', $productID)
+                    ->first();
+                return $this->jsonSuccessResponse('success', $data);
+            }
+
             if ($type === 'cart') {
                 $data = Cart::with(['menu'])
                     ->whereNull('transaction_id')

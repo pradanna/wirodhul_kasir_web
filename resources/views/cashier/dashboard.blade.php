@@ -45,21 +45,28 @@
                 </div>
                 <div class="col-md-4 min-vh-100">
                     <div class=" bg-white p-3 rounded detail-menu mb-3">
-                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Nama Menu">
+                        <div id="panel-detail-result">
+                            <div style="min-height: 200px;" class="d-flex align-items-center justify-content-center">
+                                <div style="color: var(--dark); font-weight: 500;">Menu Belum Di Pilih...</div>
+                            </div>
+                        </div>
                         <div class="card-body">
-                            <p class="nama-menu">Nama Menu</p>
-                            <p class="deskripsi">Deskripsi singkat mengenai menu yang dipilih.</p>
-                            <p class="harga-menu">Rp. 10.000</p>
                             <div class="mb-3 ">
                                 <label for="qty" class="form-label">Jumlah</label>
                                 <div class="d-flex">
                                     <input type="number" class="form-control me-2" id="qty" value="1"
                                            min="1">
                                     <a class="bt-primary">Masukan</a>
-
                                 </div>
                             </div>
                         </div>
+                        {{--                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Nama Menu">--}}
+                        {{--                        <div class="card-body">--}}
+                        {{--                            <p class="nama-menu">Nama Menu</p>--}}
+                        {{--                            <p class="deskripsi">Deskripsi singkat mengenai menu yang dipilih.</p>--}}
+                        {{--                            <p class="harga-menu">Rp. 10.000</p>--}}
+
+                        {{--                        </div>--}}
                     </div>
                     <div class=" bg-white p-3 rounded">
                         <!-- Tabel Keranjang -->
@@ -73,18 +80,7 @@
                                 <th scope="col">Aksi</th>
                             </tr>
                             </thead>
-                            {{--                            <tbody>--}}
-                            {{--                            <tr>--}}
-                            {{--                                <td>Nama Menu 1</td>--}}
-                            {{--                                <td>1</td>--}}
-                            {{--                                <td>Rp 10.000</td>--}}
-                            {{--                                <td>Rp 10.000</td>--}}
-                            {{--                                <td><a class="btn-danger-sm">x</a></td>--}}
-                            {{--                            </tr>--}}
-                            {{--                            <!-- Tambahkan item keranjang lainnya di sini -->--}}
-                            {{--                            </tbody>--}}
                         </table>
-
                         <div class="text-total">
                             <p id="lbl-total">Total : Rp0</p>
 
@@ -144,6 +140,7 @@
                 resultEl.empty();
                 if (data.length > 0) {
                     resultEl.append(createProductElement(data));
+                    eventSelectDetail();
                     // eventProductAction();
                 } else {
                     resultEl.append(createEmptyProduct());
@@ -152,6 +149,27 @@
                 alert('error' + e);
             }
         }
+
+        async function getDataDetail(id) {
+            try {
+                let resultEl = $('#panel-detail-result');
+                resultEl.empty();
+                resultEl.append(createLoader('sedang mengunduh data...', 400));
+                let url = path + '?type=detail&id=' + id;
+                let response = await $.get(url);
+                let data = response['data'];
+                console.log(data);
+                resultEl.empty();
+                if (data !== null) {
+                    resultEl.append(createProductDetailElement(data));
+                } else {
+                    resultEl.append(createEmptySelectProduct());
+                }
+            } catch (e) {
+                alert('error' + e);
+            }
+        }
+
 
         async function eventSearchHandler() {
             $("#param").keyup(
@@ -162,6 +180,14 @@
             );
         }
 
+        function eventSelectDetail() {
+            $('.btn-card').on('click', function () {
+                let id = this.dataset.id;
+                getDataDetail(id);
+                console.log(id);
+            })
+        }
+
         function createProductElement(data = []) {
             let productsEl = '';
             $.each(data, function (k, v) {
@@ -169,7 +195,7 @@
                 let image = v['image'];
                 let name = v['name'];
                 let price = v['price'];
-                productsEl += '<div class="card-menu">' +
+                productsEl += '<div class="card-menu btn-card" data-id="' + id + '">' +
                     '<img src="' + image + '" class="card-img-top" alt="Nama Menu">' +
                     '<div class="content">' +
                     '<h5 class="namamenu">' + name + '</h5>' +
@@ -181,6 +207,20 @@
                 '<div class="d-flex flex-wrap">' + productsEl +
                 '</div>'
             )
+        }
+
+        function createProductDetailElement(data) {
+            let image = data['image'];
+            let name = data['name'];
+            let price = data['price'];
+            let content = data['description'].toString();
+            let contentString = $.parseHTML(content);
+            console.log(contentString);
+            return '<img src="' + image + '" class="card-img-top" alt="Nama Menu">' +
+                '<div class="card-body">' +
+                '<p class="nama-menu">' + name + '</p>' +
+                '<p class="harga-menu">Rp. ' + price.toLocaleString('id-ID') + '</p>' +
+                    '</div>';
         }
 
         function generateTable() {
@@ -247,6 +287,7 @@
                 })
             })
         }
+
 
         $(document).ready(function () {
             eventSearchHandler();

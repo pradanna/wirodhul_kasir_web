@@ -122,6 +122,12 @@ function createEmptyProduct() {
         '</div>';
 }
 
+function createEmptySelectProduct() {
+    return '<div style="min-height: 200px;" class="d-flex align-items-center justify-content-center">' +
+        '<div style="color: var(--dark); font-weight: 500;">Menu Belum Di Pilih...</div>' +
+        '</div>';
+}
+
 function debounce(fn, delay) {
     var timer = null;
     return function () {
