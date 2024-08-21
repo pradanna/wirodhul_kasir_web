@@ -27,4 +27,17 @@ class TransactionController extends CustomController
         }
         return view('admin.transaction.index');
     }
+
+    public function detail($id)
+    {
+        $data = Transaction::with(['member', 'carts.menu'])
+            ->findOrFail($id);
+        if ($this->request->ajax()) {
+            $carts = $data->carts;
+            return $this->basicDataTables($carts);
+        }
+        return view('admin.transaction.detail')->with([
+            'data' => $data
+        ]);
+    }
 }

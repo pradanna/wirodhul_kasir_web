@@ -56,6 +56,7 @@ Route::prefix('/admin')->group(function () {
 
     Route::group(['prefix' => 'penjualan'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('admin.transaction');
+        Route::get('/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('admin.transaction.detail');
     });
 });
 
@@ -74,6 +75,7 @@ Route::prefix('kasir')->group(function () {
 
     Route::group(['prefix' => 'penjualan'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('cashier.transaction');
+        Route::get('/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('cashier.transaction.detail');
     });
 //    Route::get('/', [KasirController::class, 'index'])->name('kasir.dashboard');
 //    Route::get('/tambahmenu', [TambahMenuController::class, 'index'])->name('kasir.tambahmenu');
