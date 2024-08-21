@@ -131,6 +131,32 @@
                     </li>
                 @endif
 
+                @if(auth()->user()->role === 'cashier')
+                    <li>
+                        <a class="menu tooltip {{ request()->is('kasir/penjualan*') ? 'active' : '' }}"
+                           href="{{ route('cashier.transaction') }}">
+                            <span class="material-symbols-outlined">
+                                shopping_bag
+                            </span>
+                            <span class="text-menu"> Penjualan</span>
+                            <span class="tooltiptext">Penjualan</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if(auth()->user()->role === 'admin')
+                    <li>
+                        <a class="menu tooltip {{ request()->is('admin/penjualan*') ? 'active' : '' }}"
+                           href="{{ route('admin.transaction') }}">
+                            <span class="material-symbols-outlined">
+                                shopping_bag
+                            </span>
+                            <span class="text-menu"> Penjualan</span>
+                            <span class="tooltiptext">Penjualan</span>
+                        </a>
+                    </li>
+                @endif
+
                 {{--                @if(auth()->user()->role === 'cashier')--}}
                 {{--                    <li>--}}
                 {{--                        <a class="menu tooltip {{ Request::is('kasir/tambahmenu') ? 'active' : '' }}"--}}

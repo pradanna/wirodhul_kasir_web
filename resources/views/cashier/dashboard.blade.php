@@ -119,17 +119,17 @@
                                 <input readonly value="0" class="form-control w-100" id="diskon"/>
                             </div>
                         </div>
-                        <div class="mb-1">
-                            <label for="uangdibayar" class="form-label fs-small">Uang yang dibayarkan</label>
-                            <input type="number" class="form-control" id="uangdibayar">
-                        </div>
-                        <div class="mb-3">
-                            <label for="kembalian" class="form-label fs-small">Kembalian</label>
-                            <input type="number" class="form-control" id="kembalian" readonly>
-                        </div>
+{{--                        <div class="mb-1">--}}
+{{--                            <label for="uangdibayar" class="form-label fs-small">Uang yang dibayarkan</label>--}}
+{{--                            <input type="number" class="form-control" id="uangdibayar">--}}
+{{--                        </div>--}}
+{{--                        <div class="mb-3">--}}
+{{--                            <label for="kembalian" class="form-label fs-small">Kembalian</label>--}}
+{{--                            <input type="number" class="form-control" id="kembalian" readonly>--}}
+{{--                        </div>--}}
 
                         <!-- Tombol Checkout -->
-                        <a class="btn btn-primary w-100" href="/kasir/cetak-nota" target="_blank">Bayar</a>
+                        <a class="btn btn-primary w-100 mt-5" id="btn-pay" href="#">Bayar</a>
                     </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script>
         var path = '/{{ request()->path() }}';
-        var table;
+        var table, subTotal = 0, discount = 0, total = 0;
         var selectedMenu = null;
 
         async function getData() {
@@ -260,8 +260,10 @@
                     // eventDelete();
                     eventDelete();
                     let data = this.fnGetData();
-                    let total = data.map(item => item['total']).reduce((prev, next) => prev + next, 0);
-                    $('#lbl-total').html('Total Rp. ' + total.toLocaleString('id-ID'));
+                    subTotal = data.map(item => item['total']).reduce((prev, next) => prev + next, 0);
+                    clearDiscount();
+                    calculateTotal();
+                    // $('#lbl-total').html('Total Rp. ' + total.toLocaleString('id-ID'));
                 },
                 dom: 't',
                 columns: [
@@ -293,6 +295,12 @@
                     }
                 ],
             });
+        }
+
+        function clearDiscount() {
+            $('#member').val('');
+            discount = 0;
+            $('#diskon').val(0);
         }
 
         function eventDelete() {
@@ -350,8 +358,14 @@
                 let url = path + '/cart/discount';
                 let response = await $.get(url);
                 let data = response['data'];
+                discount = data;
+                $('#diskon').val(discount);
+                calculateTotal();
                 console.log(data);
             } catch (e) {
+                discount = 0;
+                $('#diskon').val(0);
+                calculateTotal();
                 alert('error' + e);
             }
         }
@@ -359,9 +373,57 @@
         function eventChangeMember() {
             $('#member').on('change', function () {
                 let val = this.value;
-                console.log(val);
-                getDiscount();
+                if (val === '') {
+                    discount = 0;
+                    $('#diskon').val('0')
+                    calculateTotal();
+                } else {
+                    getDiscount();
+                }
             });
+        }
+
+        function calculateTotal() {
+            let total = subTotal - discount;
+            $('#lbl-total').html('Total Rp. ' + total.toLocaleString('id-ID'));
+        }
+
+        function eventCheckout() {
+            $('#btn-pay').on('click', function (e) {
+                e.preventDefault();
+                let id = this.dataset.id;
+                AlertConfirm('Konfirmasi', 'Apakah anda yakin ingin membuat pesanan?', function () {
+                    checkoutHandler();
+                })
+            })
+        }
+
+        async function checkoutHandler() {
+            try {
+                blockLoading(true);
+                let url = path + '/cart/checkout';
+                await $.post(url, {
+                    member: $('#member').val()
+                });
+                blockLoading(false);
+                Swal.fire({
+                    title: 'Berhasil',
+                    text: 'Berhasil Membuat Pesanan...',
+                    icon: 'success',
+                    timer: 700
+                }).then(() => {
+                    table.ajax.reload();
+                });
+            } catch (e) {
+                blockLoading(false);
+                let error_message = JSON.parse(e.responseText);
+                Swal.fire({
+                    title: 'Ooops',
+                    text: error_message,
+                    icon: 'error',
+                    timer: 700
+                });
+            }
         }
 
         $(document).ready(function () {
@@ -371,6 +433,7 @@
             eventAddToCart();
 
             eventChangeMember();
+            eventCheckout();
         });
     </script>
 @endsection

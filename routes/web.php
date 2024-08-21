@@ -53,18 +53,27 @@ Route::prefix('/admin')->group(function () {
         Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\DiscountSettingController::class, 'edit'])->name('admin.discount.edit');
         Route::post('/{id}/delete', [\App\Http\Controllers\Admin\DiscountSettingController::class, 'delete'])->name('admin.discount.delete');
     });
+
+    Route::group(['prefix' => 'penjualan'], function () {
+        Route::get('/', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('admin.transaction');
+    });
 });
 
 Route::prefix('kasir')->group(function () {
     Route::match(['post', 'get'], '/', [\App\Http\Controllers\Cashier\DashboardController::class, 'index'])->name('cashier.dashboard');
     Route::match(['post', 'get'], '/cart', [\App\Http\Controllers\Cashier\DashboardController::class, 'addToCart'])->name('cashier.dashboard.add.cart');
     Route::match(['post', 'get'], '/cart/discount', [\App\Http\Controllers\Cashier\DashboardController::class, 'get_discount'])->name('cashier.dashboard.discount');
+    Route::match(['post', 'get'], '/cart/checkout', [\App\Http\Controllers\Cashier\DashboardController::class, 'checkout'])->name('cashier.dashboard.checkout');
 
     Route::group(['prefix' => 'member'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\MemberController::class, 'index'])->name('cashier.member');
         Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\MemberController::class, 'add'])->name('cashier.member.add');
         Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\MemberController::class, 'edit'])->name('cashier.member.edit');
         Route::post('/{id}/delete', [\App\Http\Controllers\Admin\MemberController::class, 'delete'])->name('cashier.member.delete');
+    });
+
+    Route::group(['prefix' => 'penjualan'], function () {
+        Route::get('/', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('cashier.transaction');
     });
 //    Route::get('/', [KasirController::class, 'index'])->name('kasir.dashboard');
 //    Route::get('/tambahmenu', [TambahMenuController::class, 'index'])->name('kasir.tambahmenu');
