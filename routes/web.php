@@ -58,6 +58,11 @@ Route::prefix('/admin')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('admin.transaction');
         Route::get('/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('admin.transaction.detail');
     });
+
+    Route::group(['prefix' => 'laporan'], function () {
+        Route::get('/', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('admin.report');
+        Route::get('/cetak', [\App\Http\Controllers\Admin\LaporanController::class, 'pdf'])->name('admin.report.print');
+    });
 });
 
 Route::prefix('kasir')->group(function () {

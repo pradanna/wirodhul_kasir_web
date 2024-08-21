@@ -182,10 +182,10 @@
                 {{--                    </li>--}}
                 {{--                @endif--}}
 
-                @if(auth()->user()->role !== 'cashier')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'owner')
                     <li>
-                        <a class="menu tooltip {{ Request::is('kasir/laporanpengeluaran') ? 'active' : '' }}"
-                           href="/kasir/laporanpengeluaran"><span class="material-symbols-outlined">
+                        <a class="menu tooltip {{ Request::is('admin/laporan') ? 'active' : '' }}"
+                           href="{{ route('admin.report') }}"><span class="material-symbols-outlined">
                                 summarize
                             </span>
                             <span class="text-menu"> Laporan Penjualan </span>
