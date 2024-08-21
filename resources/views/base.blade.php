@@ -97,6 +97,16 @@
                             <span class="tooltiptext">Menu</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="menu tooltip {{ request()->is('admin/setting-diskon*') ? 'active' : '' }}"
+                           href="{{ route('admin.discount') }}">
+                            <span class="material-symbols-outlined">
+                                attach_money
+                            </span>
+                            <span class="text-menu"> Setting Diskon</span>
+                            <span class="tooltiptext">Setting Diskon</span>
+                        </a>
+                    </li>
                 @endif
                 @if(auth()->user()->role === 'cashier')
                     <li>
@@ -110,10 +120,8 @@
                     </li>
 
                     <li>
-                        <a class="menu tooltip {{ Request::is('kasir/members') ? 'active' : '' }}"
-                           href="/kasir/members">
-
-
+                        <a class="menu tooltip {{ Request::is('kasir/member') ? 'active' : '' }}"
+                           href="{{ route('cashier.member') }}">
                             <span class="material-symbols-outlined">
                                 group
                             </span>
@@ -125,41 +133,59 @@
 
                 @if(auth()->user()->role === 'cashier')
                     <li>
-                        <a class="menu tooltip {{ Request::is('kasir/tambahmenu') ? 'active' : '' }}"
-                           href="/kasir/tambahmenu">
-
-
+                        <a class="menu tooltip {{ request()->is('kasir/penjualan*') ? 'active' : '' }}"
+                           href="{{ route('cashier.transaction') }}">
                             <span class="material-symbols-outlined">
-                                menu_book
+                                shopping_bag
                             </span>
-                            <span class="text-menu"> Tambah Menu</span>
-                            <span class="tooltiptext">Tambah Menu</span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a class=" menu {{ Request::is('kasir/pengeluaran') ? 'active' : '' }} tooltip"
-                           href="/kasir/pengeluaran"><span class="material-symbols-outlined">
-                                outbound
-                            </span>
-                            <span class="text-menu"> Pengeluaran</span>
-                            <span class="tooltiptext">Pengeluaran</span>
+                            <span class="text-menu"> Penjualan</span>
+                            <span class="tooltiptext">Penjualan</span>
                         </a>
                     </li>
                 @endif
-                {{--                <li>--}}
-                {{--                    <a class="menu tooltip {{ Request::is('kasir/laporanpemasukan') ? 'active' : '' }}"--}}
-                {{--                       href="/kasir/laporanpemasukan"><span class="material-symbols-outlined">--}}
-                {{--                                summarize--}}
-                {{--                            </span>--}}
-                {{--                        <span class="text-menu"> Laporan Pemasukan </span>--}}
-                {{--                        <span class="tooltiptext">Laporan Pemasukan </span>--}}
-                {{--                    </a>--}}
-                {{--                </li>--}}
-                @if(auth()->user()->role !== 'cashier')
+
+                @if(auth()->user()->role === 'admin')
                     <li>
-                        <a class="menu tooltip {{ Request::is('kasir/laporanpengeluaran') ? 'active' : '' }}"
-                           href="/kasir/laporanpengeluaran"><span class="material-symbols-outlined">
+                        <a class="menu tooltip {{ request()->is('admin/penjualan*') ? 'active' : '' }}"
+                           href="{{ route('admin.transaction') }}">
+                            <span class="material-symbols-outlined">
+                                shopping_bag
+                            </span>
+                            <span class="text-menu"> Penjualan</span>
+                            <span class="tooltiptext">Penjualan</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{--                @if(auth()->user()->role === 'cashier')--}}
+                {{--                    <li>--}}
+                {{--                        <a class="menu tooltip {{ Request::is('kasir/tambahmenu') ? 'active' : '' }}"--}}
+                {{--                           href="/kasir/tambahmenu">--}}
+
+
+                {{--                            <span class="material-symbols-outlined">--}}
+                {{--                                menu_book--}}
+                {{--                            </span>--}}
+                {{--                            <span class="text-menu"> Tambah Menu</span>--}}
+                {{--                            <span class="tooltiptext">Tambah Menu</span>--}}
+                {{--                        </a>--}}
+                {{--                    </li>--}}
+
+                {{--                    <li>--}}
+                {{--                        <a class=" menu {{ Request::is('kasir/pengeluaran') ? 'active' : '' }} tooltip"--}}
+                {{--                           href="/kasir/pengeluaran"><span class="material-symbols-outlined">--}}
+                {{--                                outbound--}}
+                {{--                            </span>--}}
+                {{--                            <span class="text-menu"> Pengeluaran</span>--}}
+                {{--                            <span class="tooltiptext">Pengeluaran</span>--}}
+                {{--                        </a>--}}
+                {{--                    </li>--}}
+                {{--                @endif--}}
+
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'owner')
+                    <li>
+                        <a class="menu tooltip {{ Request::is('admin/laporan') ? 'active' : '' }}"
+                           href="{{ route('admin.report') }}"><span class="material-symbols-outlined">
                                 summarize
                             </span>
                             <span class="text-menu"> Laporan Penjualan </span>

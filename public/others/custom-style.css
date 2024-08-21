@@ -142,7 +142,7 @@ input.form-control {
 
 .lazy-backdrop{
     position: fixed;
-    display: none;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -151,7 +151,7 @@ input.form-control {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.7) !important;
     z-index: 9999;
     cursor: pointer;
 }
